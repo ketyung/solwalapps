@@ -1,3 +1,6 @@
+# Some simple apps for testing the solana web3.js and the solana wallet adapter
+# by K Y Chee
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
