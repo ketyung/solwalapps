@@ -15,9 +15,9 @@ export const SendToView : React.FC = () => {
 
     const amountOnChange = (e: React.FormEvent<HTMLInputElement>): void => {
 
-        let amt = extractFloat(e.currentTarget.value);
+        let amt = parseFloat(e.currentTarget.value);
 
-        setAmount(((amt == null) ? "" : (amt+"")));
+        setAmount((isNaN(amt) ? "" : (amt+"")));
     }
 
     const addressOnChange = (e: React.FormEvent<HTMLInputElement>): void => {
@@ -25,10 +25,6 @@ export const SendToView : React.FC = () => {
         setAddress(e.currentTarget.value);
     }
 
-    const extractFloat = (text : string) : string | null => {
-        const match = text.match(/\d+((\.|,)\d+)?/)
-        return match && match[0];
-    }
       
     const onClick = useCallback(async () => {
         if (!publicKey) throw new WalletNotConnectedError();
