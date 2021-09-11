@@ -68,7 +68,7 @@ export const SendToView : React.FC = () => {
 
         }
         
-        console.log(info);
+       // console.log(info);
 
         // reset 
         setAddress("");
