@@ -1,0 +1,35 @@
+.walletBar {
+
+    padding: 5px;
+    margin: 5px;
+    background: transparent;
+    clear: both;
+}
+
+.walletButton {
+
+    margin : 10px;
+    padding: 10px;
+    float:left;
+    min-width:160px;
+    background:#362;
+    border-radius: 10px;
+    color:white; 
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 10pt;
+    
+}
+
+.disconButton {
+
+    float:left;
+    margin : 10px;
+    padding: 10px;
+    min-width:160px;
+    background:#900;
+    border-radius: 10px;
+    color:white; 
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 10pt;
+    
+}
