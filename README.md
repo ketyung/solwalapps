@@ -1,5 +1,4 @@
-# Some simple apps for testing the solana web3.js and the solana wallet adapter
-# by K Y Chee
+# Some simple apps for testing the solana web3.js and the solana wallet adapter by K Y Chee ketyung@techchee.com
 
 # Getting Started with Create React App
 
