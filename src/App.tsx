@@ -21,7 +21,7 @@ function App() {
   ], [network]);
 
   return (
-    <div className="App">
+    <div className="App"><br/>
        <ConnectionProvider endpoint={endpoint}>
        <WalletProvider wallets={wallets} autoConnect>
        
