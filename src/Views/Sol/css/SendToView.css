@@ -1,6 +1,5 @@
-.sendToDiv {
+.sendToCard {
 
-    background: #329;
     padding: 10px;
     margin:10px;
     border-radius: 10px;
@@ -8,30 +7,9 @@
     text-align: left;
 }
 
-.sendToDiv label {
+.sendToCard label {
 
-    color: white;
+    color: black;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     margin: 10px;
-}
-
-.sendToDiv input[type=text] {
-
-    outline: 0;
-    border-width: 0 0 1px;
-    border-color: #aaa;
-    margin: 5px;
-    height: 30px;
-}
-
-
-.sendToDiv .sendButton {
-
-    padding: 10px;
-    background: #483;
-    color:white;
-    font-weight: bolder;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    border-radius: 10px;
-    height: 40px;
 }

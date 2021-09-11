@@ -3,6 +3,8 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 import React, { useCallback, useState } from 'react';
 import './css/SendToView.css';
+import { Button , Input, Card } from 'antd';
+import {success, error} from '../utils/Util';
 
 // test
 export const SendToView : React.FC = () => {
@@ -57,12 +59,13 @@ export const SendToView : React.FC = () => {
 
         if (info.value.err === null) {
 
-            alert("Sent !");
+            success("Success!", 3);
 
         }
         else {
 
-            alert("Error:" + info.value.err);
+            error("Error!", 5);
+
         }
         
         console.log(info);
@@ -75,15 +78,16 @@ export const SendToView : React.FC = () => {
 
 
     return <div>
-        <div className="sendToDiv">
+        <Card title="Send Sol To Others" className="sendToCard" bordered={true}>
         <label>Address : </label>
-        <input type="text" value={address} name="address" style={{minWidth:"300px"}} onChange={addressOnChange} />
+        <Input type="text" placeholder="2iJmT1y4YtpbNv76VAjPd6sZRuDK2QFwNr5DLaHwEK31" 
+        value={address} name="address" style={{maxWidth:"300px", minHeight: "30px"}} onChange={addressOnChange} />
         <label>Amount (Sol) : </label>
-        <input type="text" value={amount} name="amount" style={{maxWidth:"50px"}} onChange={amountOnChange}/>
-        </div>
+        <Input type="text" value={amount} name="amount" style={{maxWidth:"50px", minHeight: "30px"}} onChange={amountOnChange}/>
+        <Button type="primary" disabled={!publicKey || address.trim() === ""} onClick={onClick}>
+            Send</Button>
+        </Card>
 
-        <button className="sendButton" disabled={!publicKey || address.trim() === ""} onClick={onClick}>
-            Send</button>
     </div>;
 
 }
