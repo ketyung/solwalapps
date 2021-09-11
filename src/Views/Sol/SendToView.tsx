@@ -4,6 +4,7 @@ import { PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 import React, { useCallback, useState } from 'react';
 import './css/SendToView.css';
 
+// test
 export const SendToView : React.FC = () => {
 
     const [address, setAddress] = useState("");
