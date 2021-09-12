@@ -2,6 +2,7 @@ import './App.css';
 import { useMemo } from 'react';
 import {Wallet} from './Views/Sol/Wallet';
 import {SendToView} from './Views/Sol/SendToView';
+import { AirDropView } from './Views/Sol/AirDropView';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {getPhantomWallet,getSolflareWallet,getSolletExtensionWallet} from '@solana/wallet-adapter-wallets';
@@ -28,7 +29,8 @@ function App() {
       <Wallet/>
       <br/>
       <SendToView/>
-
+      <br/>
+      <AirDropView/>
       </WalletProvider>
         </ConnectionProvider>
     </div>
