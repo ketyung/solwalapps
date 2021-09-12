@@ -67,8 +67,7 @@ export const SendToView : React.FC = () => {
     if (historyUrl.trim() !== "") style.display = "block";
 
 
-    return <div>
-        <Card title="Send Sol To Others" className="sendToCard" bordered={true}>
+    return <div><Card title="Send Sol To Others" className="sendToCard" bordered={true}>
         <label>Address : </label>
         <Input type="text" placeholder="2iJmT1y4YtpbNv76VAjPd6sZRuDK2QFwNr5DLaHwEK31" 
         value={address} name="address" style={{maxWidth:"300px", minHeight: "30px"}} onChange={addressOnChange} />
