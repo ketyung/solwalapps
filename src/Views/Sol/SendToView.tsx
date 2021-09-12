@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './css/SendToView.css';
 import { Button , Input, Card } from 'antd';
 import {success, error} from '../utils/Util';
-import useSendSolHandler from '../../Sol/Handlers/useSendSolHandler';
+import useSendSol from '../../Sol/Handlers/useSendSol';
 
 
 export const SendToView : React.FC = () => {
@@ -39,7 +39,7 @@ export const SendToView : React.FC = () => {
     }
 
 
-    const [historyUrl, sendSol] = useSendSolHandler();
+    const [historyUrl, sendSol] = useSendSol();
 
     const onClick =  () => {
         

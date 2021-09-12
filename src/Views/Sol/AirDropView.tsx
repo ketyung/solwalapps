@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Card, Button, Input} from 'antd';
 import {success, error} from '../utils/Util';
-import useAirdropHandler from '../../Sol/Handlers/useAirdropHandler';
+import useAirdrop from '../../Sol/Handlers/useAirdrop';
 
 
 export const AirDropView : React.FC = () => {
@@ -33,7 +33,7 @@ export const AirDropView : React.FC = () => {
 
     }
 
-    const [loading,airDropWallet] = useAirdropHandler();
+    const [loading,airDropWallet, balance] = useAirdrop();
 
 
     const onClick =  () => {
@@ -57,6 +57,7 @@ export const AirDropView : React.FC = () => {
         <label>Amount (Sol) : </label>
         <Input type="text" value={amount} name="amount" style={{maxWidth:"80px", minHeight: "30px"}} onChange={amountOnChange}/>
         <Button type="primary" disabled={loading} onClick={onClick}>Send</Button>
+        <span><label>Balance:</label> {balance} sol</span>
         </Card></div>;
 
 

@@ -6,7 +6,7 @@ export const netUrl = "devnet";
 
 export const explorerUrl = "https://explorer.solana.com/address/";
 
-export default function useSendSolHandler() {
+export default function useSendSol() {
 
     const { publicKey, sendTransaction } = useWallet();
     
