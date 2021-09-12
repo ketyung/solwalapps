@@ -2,16 +2,12 @@ import React, { useState } from 'react';
 import './css/SendToView.css';
 import { Button , Input, Card } from 'antd';
 import {success, error} from '../utils/Util';
-import useSolanaHandler from '../../Sol/Handlers';
+import useSendSolHandler from '../../Sol/Handlers';
 
 export const SendToView : React.FC = () => {
 
     const [address, setAddress] = useState("");
     const [amount, setAmount] = useState("");
-
-    const [histUrl, setHistUrl] = useState("");
-
-    const explorerUrl = "https://explorer.solana.com/address/"
 
     const amountOnChange = (e: React.FormEvent<HTMLInputElement>): void => {
 
@@ -35,7 +31,6 @@ export const SendToView : React.FC = () => {
 
             success("Success!", 5);
 
-            setHistUrl(explorerUrl+address+"?cluster=devnet");
             setAddress("");
             setAmount("");
         }
@@ -43,7 +38,7 @@ export const SendToView : React.FC = () => {
     }
 
 
-    const [ sendSol] = useSolanaHandler();
+    const [historyUrl, sendSol] = useSendSolHandler();
 
     const onClick =  () => {
         
@@ -68,7 +63,7 @@ export const SendToView : React.FC = () => {
 
 
     let style = { display: "none", borderColor: "#aaa", backgroundColor: "#def", padding : "10px", margin : "10px" };
-    if (histUrl.trim() !== "") style.display = "block";
+    if (historyUrl.trim() !== "") style.display = "block";
 
 
     return <div>
@@ -80,7 +75,7 @@ export const SendToView : React.FC = () => {
         <Input type="text" value={amount} name="amount" style={{maxWidth:"80px", minHeight: "30px"}} onChange={amountOnChange}/>
         <Button type="primary" disabled={address.trim() === ""} onClick={onClick}>Send</Button>
         <div style={style}>
-        <a href={histUrl} target="_blank" rel="noreferrer">Check History</a>
+        <a href={historyUrl} target="_blank" rel="noreferrer">Check History</a>
         </div>
         </Card>
 

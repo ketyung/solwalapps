@@ -1,12 +1,17 @@
 import * as web3 from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useState } from 'react';
 
 const netUrl = "devnet";
 
-export default function useSolanaHandler () {
+export default function useSendSolHandler() {
 
     const { publicKey, sendTransaction } = useWallet();
     
+    const [ historyUrl, setHistoryUrl] = useState("");
+
+    const explorerUrl = "https://explorer.solana.com/address/";
+
     async function sendSol( toAddress : string, amount : number, completionHandler : (result : boolean | Error) => void ){
 
        
@@ -43,10 +48,11 @@ export default function useSolanaHandler () {
         .then( value => {
     
             connection.confirmTransaction(value, 'processed')
-            .then( info => {
+            .then( _ => {
     
                 completionHandler(true);
-         
+                setHistoryUrl(explorerUrl+toAddress+"?cluster="+netUrl);
+
             })
             .catch ( errx => {
     
@@ -72,7 +78,7 @@ export default function useSolanaHandler () {
     }
     
 
-    return [sendSol] as const;
+    return [historyUrl, sendSol] as const;
 }
 
 
