@@ -1,59 +1,81 @@
 import * as web3 from '@solana/web3.js';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 const netUrl = "devnet";
 
-export class SolHandler {
+export default function useSolanaHandler () {
 
-    public async sendSol(wallet : web3.Keypair, toPublicKey : web3.PublicKey, amount : number,
-        completion : (result : boolean | Error) => void ){
+    const { publicKey, sendTransaction } = useWallet();
+    
+    async function sendSol( toAddress : string, amount : number, completionHandler : (result : boolean | Error) => void ){
 
+       
+        if (!publicKey) {
+    
+            completionHandler(new Error("No wallet pubkey"));
+            return; 
+        }
+    
         var connection = new web3.Connection(
             web3.clusterApiUrl(netUrl),
             'confirmed');
         
+        let toPublicKey = new web3.PublicKey(toAddress);
+    
         let amountInLp = 1000000000 * (isNaN(amount) ? 1 : amount);
-
+    
         const transaction = new web3.Transaction().add(
             web3.SystemProgram.transfer({
-                fromPubkey: wallet.publicKey,
+                fromPubkey: publicKey,
                 toPubkey: toPublicKey,
                 lamports: amountInLp,
             })
         );
-
+    
+        /**
         await web3.sendAndConfirmTransaction(
             connection,
             transaction,
-            [wallet],
-        )
+            [keypair],
+        )*/
+    
+        sendTransaction(transaction, connection)
         .then( value => {
-
+    
             connection.confirmTransaction(value, 'processed')
             .then( info => {
-
-                completion(true);
+    
+                completionHandler(true);
+         
             })
             .catch ( errx => {
-
+    
                 if (errx instanceof Error) {
-
-                    completion((errx as Error));
+    
+                    completionHandler((errx as Error));
+         
                 }
-
+    
             });
-
+    
         })
         .catch(errx => {
-            
+    
             if (errx instanceof Error) {
-
-                completion((errx as Error));
+    
+                completionHandler((errx as Error));
+         
             }
-
+    
         });
-
+    
     }
+    
 
-
-
+    return [sendSol] as const;
 }
+
+
+
+
+

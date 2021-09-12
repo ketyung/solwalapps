@@ -1,18 +1,13 @@
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import './css/SendToView.css';
 import { Button , Input, Card } from 'antd';
 import {success, error} from '../utils/Util';
+import useSolanaHandler from '../../Sol/Handlers';
 
-// test
 export const SendToView : React.FC = () => {
 
     const [address, setAddress] = useState("");
     const [amount, setAmount] = useState("");
-
-    const { connection } = useConnection();
-    const { publicKey, sendTransaction } = useWallet();
 
     const [histUrl, setHistUrl] = useState("");
 
@@ -30,25 +25,34 @@ export const SendToView : React.FC = () => {
         setAddress(e.currentTarget.value);
     }
 
-      
-    const onClick = useCallback(async () => {
-        if (!publicKey) {
+    const sendSolCompletion = (res : boolean | Error) =>  {
 
-            error("Wallet is not connected", 5);
-            return; 
+        if (res instanceof Error){
 
+            error((res as Error).message, 5);
+        }
+        else {
+
+            success("Success!", 5);
+
+            setHistUrl(explorerUrl+address+"?cluster=devnet");
+            setAddress("");
+            setAmount("");
         }
 
+    }
+
+
+    const [ sendSol] = useSolanaHandler();
+
+    const onClick =  () => {
+        
         if (address.trim() === ""){
 
             error("Address is blank", 5);
             return; 
 
         }
-
-       // console.log("wallet.pubKey:"+ publicKey.toString());
-
-        var receiverWallet = new PublicKey(address);
 
         let amt = parseFloat(amount);
 
@@ -58,70 +62,12 @@ export const SendToView : React.FC = () => {
             return; 
         }
 
-        let amountInLp = 1000000000 * (isNaN(amt) ? 1 : amt);
+        sendSol(address, amt, sendSolCompletion);
 
-        const transaction = new Transaction().add(
-            SystemProgram.transfer({
-                fromPubkey: publicKey,
-                toPubkey: receiverWallet,
-                lamports: amountInLp,
-            })
-        );
-
-        await sendTransaction(transaction, connection)
-        .then(value => {
-
-            connection.confirmTransaction(value, 'processed')
-            .then( info => {
-
-                if (info.value.err === null) {
-    
-                    success("Success!", 3);
-        
-                }
-                else {
-        
-                    error("Error!", 5);
-        
-                }
-        
-                setHistUrl(explorerUrl + address + "?cluster=devnet");
-
-                setAddress("");
-                setAmount("");
-        
-            })
-            .catch(err=> {
-
-                if (err instanceof Error) {
-
-                    let errx = (err as Error);
-                    error(errx.message, 5);
-                
-                }
-                
-                
-            })
-
-       
-        })
-        .catch(err => {
-
-            if (err instanceof Error) {
-
-                let errx = (err as Error);
-                error(errx.message, 5);
-            
-            }
-               
-        });
-
-      
-    }, [address, amount, publicKey, sendTransaction, connection]);
+    };
 
 
-    let style = { display: "none", borderColor: "#333", 
-    backgroundColor: "#def", padding : "10px", margin : "10px" };
+    let style = { display: "none", borderColor: "#aaa", backgroundColor: "#def", padding : "10px", margin : "10px" };
     if (histUrl.trim() !== "") style.display = "block";
 
 
@@ -132,7 +78,7 @@ export const SendToView : React.FC = () => {
         value={address} name="address" style={{maxWidth:"300px", minHeight: "30px"}} onChange={addressOnChange} />
         <label>Amount (Sol) : </label>
         <Input type="text" value={amount} name="amount" style={{maxWidth:"80px", minHeight: "30px"}} onChange={amountOnChange}/>
-        <Button type="primary" disabled={!publicKey || address.trim() === ""} onClick={onClick}>Send</Button>
+        <Button type="primary" disabled={address.trim() === ""} onClick={onClick}>Send</Button>
         <div style={style}>
         <a href={histUrl} target="_blank" rel="noreferrer">Check History</a>
         </div>
