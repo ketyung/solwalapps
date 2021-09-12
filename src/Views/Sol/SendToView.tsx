@@ -18,9 +18,9 @@ export const SendToView : React.FC = () => {
 
     const amountOnChange = (e: React.FormEvent<HTMLInputElement>): void => {
 
-        let amt = parseFloat(e.currentTarget.value);
+        let amt = e.currentTarget.value;
 
-        setAmount((isNaN(amt) ? "" : (amt+"")));
+        setAmount(amt);
     }
 
     const addressOnChange = (e: React.FormEvent<HTMLInputElement>): void => {
@@ -30,18 +30,31 @@ export const SendToView : React.FC = () => {
 
       
     const onClick = useCallback(async () => {
-        if (!publicKey) throw new WalletNotConnectedError();
+        if (!publicKey) {
+
+            error("Wallet is not connected", 5);
+            return; 
+
+        }
 
         if (address.trim() === ""){
 
-            throw new Error("Receiver address is blank!!");
+            error("Address is blank", 5);
+            return; 
+
         }
 
        // console.log("wallet.pubKey:"+ publicKey.toString());
 
         var receiverWallet = new PublicKey(address);
 
-        let amt = parseInt(amount);
+        let amt = parseFloat(amount);
+
+        if (isNaN(amt)) {
+
+            error("Amount is NAN", 5);
+            return; 
+        }
 
         let amountInLp = 1000000000 * (isNaN(amt) ? 1 : amt);
 
@@ -53,27 +66,43 @@ export const SendToView : React.FC = () => {
             })
         );
 
-        const signature = await sendTransaction(transaction, connection);
+        await sendTransaction(transaction, connection)
+        .then(value => {
 
-        let info = await connection.confirmTransaction(signature, 'processed');
+            connection.confirmTransaction(value, 'processed')
+            .then( info => {
 
-        if (info.value.err === null) {
-
-            success("Success!", 3);
-
-        }
-        else {
-
-            error("Error!", 5);
-
-        }
+                if (info.value.err === null) {
+    
+                    success("Success!", 3);
         
-       // console.log(info);
+                }
+                else {
+        
+                    error("Error!", 5);
+        
+                }
+               
+                setAddress("");
+                setAmount("");
+        
+            })
+            .catch(err=> {
 
-        // reset 
-        setAddress("");
-        setAmount("");
+                error(err, 5);
+                
+            })
 
+       
+        })
+        .catch(err => {
+
+           
+           error(err, 5);
+               
+        });
+
+      
     }, [address, amount, publicKey, sendTransaction, connection]);
 
 
@@ -83,9 +112,8 @@ export const SendToView : React.FC = () => {
         <Input type="text" placeholder="2iJmT1y4YtpbNv76VAjPd6sZRuDK2QFwNr5DLaHwEK31" 
         value={address} name="address" style={{maxWidth:"300px", minHeight: "30px"}} onChange={addressOnChange} />
         <label>Amount (Sol) : </label>
-        <Input type="text" value={amount} name="amount" style={{maxWidth:"50px", minHeight: "30px"}} onChange={amountOnChange}/>
-        <Button type="primary" disabled={!publicKey || address.trim() === ""} onClick={onClick}>
-            Send</Button>
+        <Input type="text" value={amount} name="amount" style={{maxWidth:"80px", minHeight: "30px"}} onChange={amountOnChange}/>
+        <Button type="primary" disabled={!publicKey || address.trim() === ""} onClick={onClick}>Send</Button>
         </Card>
 
     </div>;
