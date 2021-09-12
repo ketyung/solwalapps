@@ -89,7 +89,13 @@ export const SendToView : React.FC = () => {
             })
             .catch(err=> {
 
-                error(err, 5);
+                if (err instanceof Error) {
+
+                    let errx = (err as Error);
+                    error(errx.message, 5);
+                
+                }
+                
                 
             })
 
@@ -97,8 +103,12 @@ export const SendToView : React.FC = () => {
         })
         .catch(err => {
 
-           
-           error(err, 5);
+            if (err instanceof Error) {
+
+                let errx = (err as Error);
+                error(errx.message, 5);
+            
+            }
                
         });
 
