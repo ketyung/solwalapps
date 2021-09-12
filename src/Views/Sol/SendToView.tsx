@@ -1,4 +1,3 @@
-import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 import React, { useCallback, useState } from 'react';
@@ -15,6 +14,9 @@ export const SendToView : React.FC = () => {
     const { connection } = useConnection();
     const { publicKey, sendTransaction } = useWallet();
 
+    const [histUrl, setHistUrl] = useState("");
+
+    const explorerUrl = "https://explorer.solana.com/address/"
 
     const amountOnChange = (e: React.FormEvent<HTMLInputElement>): void => {
 
@@ -82,7 +84,9 @@ export const SendToView : React.FC = () => {
                     error("Error!", 5);
         
                 }
-               
+        
+                setHistUrl(explorerUrl + address + "?cluster=devnet");
+
                 setAddress("");
                 setAmount("");
         
@@ -116,6 +120,11 @@ export const SendToView : React.FC = () => {
     }, [address, amount, publicKey, sendTransaction, connection]);
 
 
+    let style = { display: "none", borderColor: "#333", 
+    backgroundColor: "#def", padding : "10px", margin : "10px" };
+    if (histUrl.trim() !== "") style.display = "block";
+
+
     return <div>
         <Card title="Send Sol To Others" className="sendToCard" bordered={true}>
         <label>Address : </label>
@@ -124,6 +133,9 @@ export const SendToView : React.FC = () => {
         <label>Amount (Sol) : </label>
         <Input type="text" value={amount} name="amount" style={{maxWidth:"80px", minHeight: "30px"}} onChange={amountOnChange}/>
         <Button type="primary" disabled={!publicKey || address.trim() === ""} onClick={onClick}>Send</Button>
+        <div style={style}>
+        <a href={histUrl} target="_blank" rel="noreferrer">Check History</a>
+        </div>
         </Card>
 
     </div>;
