@@ -21,7 +21,7 @@ export const SendToView : React.FC = () => {
         setAddress(e.currentTarget.value);
     }
 
-    const sendSolCompletion = (res : boolean | Error) =>  {
+    const sendSolCompletion = (res : null | Error) =>  {
 
         if (res instanceof Error){
 

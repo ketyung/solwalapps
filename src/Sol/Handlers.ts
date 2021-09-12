@@ -12,7 +12,7 @@ export default function useSendSolHandler() {
 
     const explorerUrl = "https://explorer.solana.com/address/";
 
-    async function sendSol( toAddress : string, amount : number, completionHandler : (result : boolean | Error) => void ){
+    async function sendSol( toAddress : string, amount : number, completionHandler : (result : null | Error) => void ){
 
        
         if (!publicKey) {
@@ -50,7 +50,7 @@ export default function useSendSolHandler() {
             connection.confirmTransaction(value, 'processed')
             .then( _ => {
     
-                completionHandler(true);
+                completionHandler(null);
                 setHistoryUrl(explorerUrl+toAddress+"?cluster="+netUrl);
 
             })
