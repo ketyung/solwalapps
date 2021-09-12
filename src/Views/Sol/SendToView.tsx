@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import './css/SendToView.css';
 import { Button , Input, Card } from 'antd';
 import {success, error} from '../utils/Util';
-import useSendSolHandler from '../../Sol/Handlers';
+import useSendSolHandler from '../../Sol/Handlers/useSendSolHandler';
+
 
 export const SendToView : React.FC = () => {
 
