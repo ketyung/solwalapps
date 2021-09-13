@@ -21,7 +21,7 @@ export const ExecHwView : React.FC = () => {
 
         if (res instanceof Error){
 
-            error((res as Error).message, 5);
+            error((res as Error).message, 10);
         }
         else {
 
