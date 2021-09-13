@@ -5,7 +5,7 @@ import useHwProgram from '../../Sol/Handlers/useHwProgram';
 
 export const ExecHwView : React.FC = () => {
 
-    const [seed, setSeed, sayHello, getGreetingCount, loading, greetedPubKey] = useHwProgram();
+    const [seed, setSeed, send, getGreetingCount, loading, greetedPubKey] = useHwProgram();
     
     const [greetedAccount, setGreetedAccount] = useState<[number, string]>([0, "None"]);
 
@@ -46,7 +46,7 @@ export const ExecHwView : React.FC = () => {
 
         setGreetedAccount([0, "Working..."]);
 
-        sayHello(completion);
+        send(completion);
 
     };
 

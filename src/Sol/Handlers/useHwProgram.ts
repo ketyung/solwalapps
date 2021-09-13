@@ -36,6 +36,11 @@ export default function useHwProgram() {
 
     const [loading, setLoading] = useState(false);
 
+    let connection = new web3.Connection(
+        web3.clusterApiUrl(netUrl),
+        'confirmed');
+   
+
     async function hasSufficientFund() : Promise<boolean> {
 
         if (!publicKey) {
@@ -44,11 +49,7 @@ export default function useHwProgram() {
             return false ; 
         }
 
-        var connection = new web3.Connection(
-            web3.clusterApiUrl(netUrl),
-            'confirmed');
-       
-
+     
         let fees = 0;
 
         const {feeCalculator} = await connection.getRecentBlockhash();
@@ -79,65 +80,51 @@ export default function useHwProgram() {
             console.log("hasSufficientFund, no wallet pubkey");
             return false ; 
         }
-
-
-        var connection = new web3.Connection(
-            web3.clusterApiUrl(netUrl),
-            'confirmed');
-  
-
-        const greetedAccount = await connection.getAccountInfo(pkey);
-        if (greetedAccount === null) {
-            console.log(
-                'Creating account',
-                pkey.toBase58(),
-                'to say hello to',
-            );
-            
-            const lamports = await connection.getMinimumBalanceForRentExemption(
-                GreetingSize,
-            ) ;
         
-           // console.log("exemption lamports:", lamports);
-        
-            const transaction = new web3.Transaction().add(
-                web3.SystemProgram.createAccountWithSeed({
-                fromPubkey: publicKey,
-                basePubkey: publicKey,
-                seed: seed,
-                newAccountPubkey: pkey,
-                lamports,
-                space: GreetingSize,
-                programId,
-                }),
-            );
+        const lamports = await connection.getMinimumBalanceForRentExemption(
+            GreetingSize,
+        ) ;
+    
+        // console.log("exemption lamports:", lamports);
+    
+        const transaction = new web3.Transaction().add(
+            web3.SystemProgram.createAccountWithSeed({
+            fromPubkey: publicKey,
+            basePubkey: publicKey,
+            seed: seed,
+            newAccountPubkey: pkey,
+            lamports,
+            space: GreetingSize,
+            programId,
+            }),
+        );
 
-            sendTransaction(transaction, connection)
-            .then( value => {
-        
-                connection.confirmTransaction(value, 'processed').then(_ => {
+        sendTransaction(transaction, connection)
+        .then( value => {
+    
+            connection.confirmTransaction(value, 'processed').then(_ => {
 
-                    return true;
-                })
-                .catch( e => {
+                return true;
+            })
+            .catch( e => {
 
-                    return false;
-
-                });
-
-            }).catch( err => {
-
-                console.log("Creating greeting account error: ", err);
                 return false;
+
             });
-        }
+
+        }).catch( err => {
+
+            console.log("Creating greeting account error: ", err);
+            return false;
+        });
+
       
         return true;
     }
 
 
 
-    async function sayHello(completionHandler : (result : null | Error) => void) {
+    async function send(completionHandler : (result : null | Error) => void) {
 
         setLoading(true);
 
@@ -162,15 +149,51 @@ export default function useHwProgram() {
          
             setGreetedPubKey(val);
 
-            createGreetedAccountIfNotExists(val);
+
+            const acc = connection.getAccountInfo(val);
+
+            if (acc === null ) {
+
+
+                createGreetedAccountIfNotExists(val).then( ret  => {
+
+                    if (ret) {
+
+                        sendInstruction(val, completionHandler);
+
+                    }
+                    else {
+
+                        completionHandler( new Error("Failed to create account"));
+                        return;
+                    }
+                 
+                }).catch( err =>{
+
+                    completionHandler(err);
+                    return ; 
+                });
   
+            }
+            else {
 
-            var connection = new web3.Connection(
-                web3.clusterApiUrl(netUrl),
-                'confirmed');
+                sendInstruction(val, completionHandler);
+            }
+        })
+        .catch( err => {
 
-            const instruction = new web3.TransactionInstruction({
-            keys: [{pubkey: val, isSigner: false, isWritable: true}],
+            completionHandler(err);
+        
+        });
+
+
+      }
+
+
+      async function sendInstruction(pubkey : web3.PublicKey, completionHandler : (result : null | Error) => void){
+
+        const instruction = new web3.TransactionInstruction({
+            keys: [{pubkey: pubkey, isSigner: false, isWritable: true}],
             programId,data: Buffer.alloc(seed.length), });
 
             const transaction = new web3.Transaction().add(instruction);
@@ -200,9 +223,6 @@ export default function useHwProgram() {
                     
             });
 
-        });
-
-
       }
 
       async function getGreetingCount(): Promise<[number, string]> {
@@ -211,10 +231,6 @@ export default function useHwProgram() {
             
                 return [-1, "No greeted pubkey"];
             }
-
-            var connection = new web3.Connection(
-                web3.clusterApiUrl(netUrl),
-                'confirmed');
 
 
             const accountInfo = await connection.getAccountInfo(greetedPubKey);
@@ -229,6 +245,6 @@ export default function useHwProgram() {
 
       }
 
-      return [seed, setSeed, sayHello, getGreetingCount, loading, greetedPubKey] as const;
+      return [seed, setSeed, send, getGreetingCount, loading, greetedPubKey] as const;
 
 }
