@@ -5,7 +5,7 @@ import useHwProgram from '../../Sol/Handlers/useHwProgram';
 
 export const ExecHwView : React.FC = () => {
 
-    const [seed, setSeed, sayHello, getGreetingCount, loading] = useHwProgram();
+    const [seed, setSeed, sayHello, getGreetingCount, loading, greetedPubKey] = useHwProgram();
     
     const [greetedAccount, setGreetedAccount] = useState<[number, string]>([0, "None"]);
 
@@ -55,6 +55,10 @@ export const ExecHwView : React.FC = () => {
         <Input type="text" value={seed} name="seed" style={{maxWidth:"160px", minHeight: "30px"}} 
         onChange={seedOnChange}/>
         <Button type="primary" disabled={loading} onClick={onClick}>Send</Button>
+        <br/>
+        <div>
+        <label>Going to greet </label> <span>{greetedPubKey?.toBase58()}</span>
+        </div>
         <br/>
         <div>
         <label>Account: </label>

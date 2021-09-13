@@ -253,6 +253,6 @@ export default function useHwProgram() {
 
       }
 
-      return [seed, setSeed, sayHello, getGreetingCount, loading] as const;
+      return [seed, setSeed, sayHello, getGreetingCount, loading, greetedPubKey] as const;
 
 }
