@@ -164,7 +164,8 @@ export default function useHwProgram() {
 
         if (!publicKey){
             completionHandler(new Error("No wallet pubkey"));
-       
+            setLoading(false);
+            
             return; 
         }
 
@@ -172,6 +173,8 @@ export default function useHwProgram() {
         if ( !hasSufficientFund()) {
 
             completionHandler(new Error("Insufficient fund, consider to add or airdrop some to wallet!"));
+            setLoading(false);
+            
             return;
         }
 
@@ -180,6 +183,8 @@ export default function useHwProgram() {
 
         if ( !greetedPubKey){
             completionHandler(new Error("No greeted pubkey"));
+            setLoading(false);
+
             return 
         }
 
