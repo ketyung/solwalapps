@@ -97,19 +97,19 @@ export default function useHwProgram() {
     }
 
 
-    async function createGreetedAccountIfNotExists(){
+    async function createGreetedAccountIfNotExists() : Promise<boolean>{
         
         if (!publicKey){
 
             console.log("createGreetedAccountIfNotExists()::No wallet pubkey");
-            return; 
+            return false ; 
         }
 
         if ( !greetedPubKey){
         
             console.log("createGreetedAccountIfNotExists()::No greeted pubkey");
         
-            return 
+            return false;
         }
 
         var connection = new web3.Connection(
@@ -146,14 +146,24 @@ export default function useHwProgram() {
             sendTransaction(transaction, connection)
             .then( value => {
         
-                connection.confirmTransaction(value, 'processed');
+                connection.confirmTransaction(value, 'processed').then(_ => {
+
+                    return true;
+                })
+                .catch( e => {
+
+                    return false;
+
+                });
 
             }).catch( err => {
 
                 console.log("Creating greeting account error: ", err);
-
+                return false;
             });
         }
+
+        return true;
     }
 
 
@@ -178,52 +188,56 @@ export default function useHwProgram() {
             return;
         }
 
-        constructGreetedPubKey();
+        constructGreetedPubKey().then( v => {
 
 
-        if ( !greetedPubKey){
-            completionHandler(new Error("No greeted pubkey"));
-            setLoading(false);
-
-            return 
-        }
-
-        var connection = new web3.Connection(
-            web3.clusterApiUrl(netUrl),
-            'confirmed');
-
-        const instruction = new web3.TransactionInstruction({
-          keys: [{pubkey: greetedPubKey, isSigner: false, isWritable: true}],
-          programId,
-          data: Buffer.alloc(seed.length), 
-        });
-
-        const transaction = new web3.Transaction().add(instruction);
-
-
-        sendTransaction(transaction, connection)
-        .then( value => {
-    
-            connection.confirmTransaction(value, 'processed').then (_ =>{
-
-                completionHandler(null);
+            if ( !greetedPubKey){
+                completionHandler(new Error("No greeted pubkey"));
                 setLoading(false);
+
+                return 
+            }
+
+            var connection = new web3.Connection(
+                web3.clusterApiUrl(netUrl),
+                'confirmed');
+
+            const instruction = new web3.TransactionInstruction({
+            keys: [{pubkey: greetedPubKey, isSigner: false, isWritable: true}],
+            programId,
+            data: Buffer.alloc(seed.length), 
+            });
+
+            const transaction = new web3.Transaction().add(instruction);
+
+
+            sendTransaction(transaction, connection)
+            .then( value => {
+        
+                connection.confirmTransaction(value, 'processed').then (_ =>{
+
+                    completionHandler(null);
+                    setLoading(false);
+
+                })
+                .catch(err => {
+
+                    completionHandler(err);
+                    setLoading(false);
+                    
+                });
 
             })
             .catch(err => {
 
                 completionHandler(err);
                 setLoading(false);
-                
+                    
             });
 
-        })
-        .catch(err => {
-
-            completionHandler(err);
-            setLoading(false);
-                
         });
+
+
 
       }
 
