@@ -5,9 +5,16 @@ import useHwProgram from '../../Sol/Handlers/useHwProgram';
 
 export const ExecHwView : React.FC = () => {
 
-    const [seed, setSeed, sayHello, getGreetingCount] = useHwProgram();
+    const [seed, setSeed, sayHello, getGreetingCount, loading] = useHwProgram();
     
-    const [greetedAccount, setGreetedAccount] = useState<[number, string]>([0, ""]);
+    const [greetedAccount, setGreetedAccount] = useState<[number, string]>([0, "None"]);
+
+    const seedOnChange = (e: React.FormEvent<HTMLInputElement>): void => {
+
+        let txt = e.currentTarget.value;
+
+        setSeed(txt);
+    }
 
 
     const completion = (res : null | Error) =>  {
@@ -43,6 +50,16 @@ export const ExecHwView : React.FC = () => {
 
     return <div>
 
-        
+<Card title="Execute the Greeting On-chain program (smart contract)" className="sendToCard" bordered={true}>
+        <label>Seed : </label>
+        <Input type="text" value={seed} name="seed" style={{maxWidth:"160px", minHeight: "30px"}} 
+        onChange={seedOnChange}/>
+        <Button type="primary" disabled={loading} onClick={onClick}>Send</Button>
+        <br/>
+        <div>
+        <label>Account: </label>
+        <span>{greetedAccount[1]} has been greeted {greetedAccount[0]} times</span>
+        </div>
+        </Card>
     </div>;
 }

@@ -34,6 +34,7 @@ export default function useHwProgram() {
 
     const [greetedPubKey, setGreetedPubKey] = useState<null | web3.PublicKey>(null);
 
+    const [loading, setLoading] = useState(false);
 
     async function hasSufficientFund() : Promise<boolean> {
 
@@ -159,6 +160,8 @@ export default function useHwProgram() {
 
     async function sayHello(completionHandler : (result : null | Error) => void) {
 
+        setLoading(true);
+
         if (!publicKey){
             completionHandler(new Error("No wallet pubkey"));
        
@@ -199,16 +202,22 @@ export default function useHwProgram() {
             connection.confirmTransaction(value, 'processed').then (_ =>{
 
                 completionHandler(null);
+                setLoading(false);
+
             })
             .catch(err => {
 
                 completionHandler(err);
+                setLoading(false);
+                
             });
 
         })
         .catch(err => {
 
             completionHandler(err);
+            setLoading(false);
+                
         });
 
       }
@@ -239,6 +248,6 @@ export default function useHwProgram() {
 
       }
 
-      return [seed, setSeed, sayHello, getGreetingCount] as const;
+      return [seed, setSeed, sayHello, getGreetingCount, loading] as const;
 
 }
