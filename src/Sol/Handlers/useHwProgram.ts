@@ -150,34 +150,48 @@ export default function useHwProgram() {
             setGreetedPubKey(val);
 
 
-            const acc = connection.getAccountInfo(val);
+            connection.getAccountInfo(val).then ( acc => {
 
-            if (acc === null ) {
+                if (acc === null ) {
 
-                createGreetedAccountIfNotExists(val).then( ret  => {
+                    console.log("going to create .acc!");
+    
+                    createGreetedAccountIfNotExists(val).then( ret  => {
+    
+                        if (ret) {
+    
+                            console.log("account created!",ret);
+    
+                            sendInstruction(val, completionHandler);
+    
+                        }
+                        else {
+    
+                            completionHandler( new Error("Failed to create account"));
+                            return;
+                        }
+                     
+                    }).catch( err =>{
+    
+                        completionHandler(err);
+                        return ; 
+                    });
+      
+                }
+                else {
+    
+                    console.log("Proceed without acc  creation!");
+                    sendInstruction(val, completionHandler);
+                }
+            })
+            .catch (err => {
 
-                    if (ret) {
+                completionHandler(err);
+                return ; 
+    
+            })
 
-                        sendInstruction(val, completionHandler);
-
-                    }
-                    else {
-
-                        completionHandler( new Error("Failed to create account"));
-                        return;
-                    }
-                 
-                }).catch( err =>{
-
-                    completionHandler(err);
-                    return ; 
-                });
-  
-            }
-            else {
-
-                sendInstruction(val, completionHandler);
-            }
+          
         })
         .catch( err => {
 
