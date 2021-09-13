@@ -72,31 +72,25 @@ export default function useHwProgram() {
     }
 
 
-    async function createGreetedAccountIfNotExists() : Promise<boolean>{
+    async function createGreetedAccountIfNotExists( pkey : web3.PublicKey) : Promise<boolean>{
         
-        if (!publicKey){
+        if (!publicKey) {
 
-            console.log("createGreetedAccountIfNotExists()::No wallet pubkey");
+            console.log("hasSufficientFund, no wallet pubkey");
             return false ; 
         }
 
-        if ( !greetedPubKey){
-        
-            console.log("createGreetedAccountIfNotExists()::No greeted pubkey");
-        
-            return false;
-        }
 
         var connection = new web3.Connection(
             web3.clusterApiUrl(netUrl),
             'confirmed');
   
 
-        const greetedAccount = await connection.getAccountInfo(greetedPubKey);
+        const greetedAccount = await connection.getAccountInfo(pkey);
         if (greetedAccount === null) {
             console.log(
                 'Creating account',
-                greetedPubKey.toBase58(),
+                pkey.toBase58(),
                 'to say hello to',
             );
             
@@ -111,7 +105,7 @@ export default function useHwProgram() {
                 fromPubkey: publicKey,
                 basePubkey: publicKey,
                 seed: seed,
-                newAccountPubkey: greetedPubKey,
+                newAccountPubkey: pkey,
                 lamports,
                 space: GreetingSize,
                 programId,
@@ -168,7 +162,7 @@ export default function useHwProgram() {
          
             setGreetedPubKey(val);
 
-            createGreetedAccountIfNotExists();
+            createGreetedAccountIfNotExists(val);
   
 
             var connection = new web3.Connection(
