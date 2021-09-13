@@ -213,6 +213,32 @@ export default function useHwProgram() {
 
       }
 
-      return [seed, setSeed, sayHello] as const;
+      async function getGreetingCount(): Promise<[number, string]> {
+
+            if ( !greetedPubKey){
+            
+                console.log("::No greeted pubkey");
+            
+                return [-1, "No greeted ubkey"];
+            }
+
+            var connection = new web3.Connection(
+                web3.clusterApiUrl(netUrl),
+                'confirmed');
+
+
+            const accountInfo = await connection.getAccountInfo(greetedPubKey);
+            if (accountInfo === null) {
+                console.log( 'Error: cannot find the greeted account' );
+                return [-1 , "Cannot find greeted account"];
+            }
+
+            const greeting = borsh.deserialize(GreetingSchema,GreetingAccount,accountInfo.data,);
+            
+            return [greeting.counter, accountInfo.owner.toBase58()];
+
+      }
+
+      return [seed, setSeed, sayHello, getGreetingCount] as const;
 
 }

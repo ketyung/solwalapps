@@ -6,8 +6,6 @@ import useAirdrop from '../../Sol/Handlers/useAirdrop';
 
 export const AirDropView : React.FC = () => {
 
-
-   
     const [amount, setAmount] = useState("");
 
     const amountOnChange = (e: React.FormEvent<HTMLInputElement>): void => {
