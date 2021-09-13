@@ -44,6 +44,8 @@ export const ExecHwView : React.FC = () => {
             return;
         }
 
+        setGreetedAccount([0, "Working..."]);
+
         sayHello(completion);
 
     };
@@ -66,7 +68,7 @@ export const ExecHwView : React.FC = () => {
             <span>
             <label>Account: </label>
             <span>{greetedAccount[1]} has been greeted {greetedAccount[0]} times</span></span>
-            : <span style={{background: "#f00"}}>{greetedAccount[1]}</span>
+            : <div style={{background: "#f00", color: "white", padding: "10px"}}>{greetedAccount[1]}</div>
 
         }
         </div>

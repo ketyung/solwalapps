@@ -72,29 +72,6 @@ export default function useHwProgram() {
     }
 
 
-    async function constructGreetedPubKey(){
-
-        if (!publicKey) {
-
-            return ;
-        }
-
-        await web3.PublicKey.createWithSeed(publicKey,seed,programId).then( val => {
-
-            console.log("greated.pub.key", val.toBase58());
-            setGreetedPubKey(val);
-
-            createGreetedAccountIfNotExists();
-  
-        }).catch( err => {
-
-            console.log("Creating greeted pub.key error::", err);
-        });
-
-        
-    }
-
-
     async function createGreetedAccountIfNotExists() : Promise<boolean>{
         
         if (!publicKey){
@@ -160,13 +137,7 @@ export default function useHwProgram() {
                 return false;
             });
         }
-        /**
-        else {
-
-            console.log("greetedP:", greetedPubKey.toBase58());
-            console.log("accInfo::", greetedAccount.owner.toBase58());
-        } */
-
+      
         return true;
     }
 
@@ -192,24 +163,21 @@ export default function useHwProgram() {
             return;
         }
 
-        constructGreetedPubKey().then( _ => {
+        await web3.PublicKey.createWithSeed(publicKey,seed,programId).then( val => {
 
+         
+            setGreetedPubKey(val);
 
-            if ( !greetedPubKey){
-                completionHandler(new Error("No greeted pubkey"));
-                setLoading(false);
-                return 
-            }
+            createGreetedAccountIfNotExists();
+  
 
             var connection = new web3.Connection(
                 web3.clusterApiUrl(netUrl),
                 'confirmed');
 
             const instruction = new web3.TransactionInstruction({
-            keys: [{pubkey: greetedPubKey, isSigner: false, isWritable: true}],
-            programId,
-            data: Buffer.alloc(seed.length), 
-            });
+            keys: [{pubkey: val, isSigner: false, isWritable: true}],
+            programId,data: Buffer.alloc(seed.length), });
 
             const transaction = new web3.Transaction().add(instruction);
 
@@ -241,14 +209,13 @@ export default function useHwProgram() {
         });
 
 
-
       }
 
       async function getGreetingCount(): Promise<[number, string]> {
 
             if ( !greetedPubKey){
             
-                return [-1, "No greeted ubkey"];
+                return [-1, "No greeted pubkey"];
             }
 
             var connection = new web3.Connection(
