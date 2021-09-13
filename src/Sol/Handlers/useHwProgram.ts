@@ -124,7 +124,7 @@ export default function useHwProgram() {
 
 
 
-    async function send(completionHandler : (result : null | Error) => void) {
+    async function send(completionHandler : (result : string | Error) => void) {
 
         setLoading(true);
 
@@ -153,7 +153,6 @@ export default function useHwProgram() {
             const acc = connection.getAccountInfo(val);
 
             if (acc === null ) {
-
 
                 createGreetedAccountIfNotExists(val).then( ret  => {
 
@@ -190,9 +189,9 @@ export default function useHwProgram() {
       }
 
 
-      async function sendInstruction(pubkey : web3.PublicKey, completionHandler : (result : null | Error) => void){
+      async function sendInstruction(pubkey : web3.PublicKey, completionHandler : (result : string | Error) => void){
 
-        const instruction = new web3.TransactionInstruction({
+            const instruction = new web3.TransactionInstruction({
             keys: [{pubkey: pubkey, isSigner: false, isWritable: true}],
             programId,data: Buffer.alloc(seed.length), });
 
@@ -204,7 +203,7 @@ export default function useHwProgram() {
         
                 connection.confirmTransaction(value, 'processed').then (_ =>{
 
-                    completionHandler(null);
+                    completionHandler(pubkey.toBase58());
                     setLoading(false);
 
                 })
@@ -225,23 +224,19 @@ export default function useHwProgram() {
 
       }
 
-      async function getGreetingCount(): Promise<[number, string]> {
+      async function getGreetingCount( pubkey : string): Promise<[number, string]> {
 
-            if ( !greetedPubKey){
-            
-                return [-1, "No greeted pubkey"];
-            }
+            let pkey = new web3.PublicKey(pubkey);
 
-
-            const accountInfo = await connection.getAccountInfo(greetedPubKey);
+            const accountInfo = await connection.getAccountInfo(pkey);
             if (accountInfo === null) {
-                //console.log( 'Error: cannot find the greeted account' );
+            
                 return [-1 , "Cannot find greeted account"];
             }
 
             const greeting = borsh.deserialize(GreetingSchema,GreetingAccount,accountInfo.data,);
             
-            return [greeting.counter, greetedPubKey.toBase58()];
+            return [greeting.counter, pubkey];
 
       }
 

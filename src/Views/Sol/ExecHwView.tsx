@@ -17,7 +17,7 @@ export const ExecHwView : React.FC = () => {
     }
 
 
-    const completion = (res : null | Error) =>  {
+    const completion = (res : string | Error) =>  {
 
         if (res instanceof Error){
 
@@ -27,7 +27,7 @@ export const ExecHwView : React.FC = () => {
 
             success("Success!", 5);
             
-            getGreetingCount().then( value => {
+            getGreetingCount(res).then( value => {
 
                 setGreetedAccount(value);
             })
@@ -53,21 +53,21 @@ export const ExecHwView : React.FC = () => {
     return <div>
 
 <Card title="Execute the Greeting On-chain program (smart contract)" className="sendToCard" bordered={true}>
-        <label>Seed : </label>
+        <label>Text : </label>
         <Input type="text" value={seed} name="seed" style={{maxWidth:"160px", minHeight: "30px"}} 
         onChange={seedOnChange}/>
         <Button type="primary" disabled={loading} onClick={onClick}>Send</Button>
         <br/>
         <div>
-        <label>Going to greet </label> <span>{greetedPubKey?.toBase58()}</span>
+        <label>Shown as key : </label> <span>{greetedPubKey?.toBase58()}</span>
         </div>
         <br/>
         <div>{
             
             greetedAccount[0] > -1 ?
             <span>
-            <label>Account: </label>
-            <span>{greetedAccount[1]} has been greeted {greetedAccount[0]} times</span></span>
+            <label>Value: </label>
+            <span>{greetedAccount[1]} : {greetedAccount[0]}</span></span>
             : <div style={{background: "#f00", color: "white", padding: "10px"}}>{greetedAccount[1]}</div>
 
         }
