@@ -187,7 +187,7 @@ export default function useHwProgram() {
         const instruction = new web3.TransactionInstruction({
           keys: [{pubkey: greetedPubKey, isSigner: false, isWritable: true}],
           programId,
-          data: Buffer.alloc(0), // All instructions are hellos
+          data: Buffer.alloc(seed.length), 
         });
 
         const transaction = new web3.Transaction().add(instruction);
