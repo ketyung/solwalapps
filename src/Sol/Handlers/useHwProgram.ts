@@ -154,13 +154,13 @@ export default function useHwProgram() {
 
                 if (acc === null ) {
 
-                    console.log("going to create .acc!");
+                    //console.log("going to create .acc!");
     
                     createGreetedAccountIfNotExists(val).then( ret  => {
     
                         if (ret) {
     
-                            console.log("account created!",ret);
+                           // console.log("account created!",ret);
     
                             sendInstruction(val, completionHandler);
     
@@ -180,7 +180,7 @@ export default function useHwProgram() {
                 }
                 else {
     
-                    console.log("Proceed without acc  creation!");
+                   // console.log("Proceed without acc  creation!");
                     sendInstruction(val, completionHandler);
                 }
             })
