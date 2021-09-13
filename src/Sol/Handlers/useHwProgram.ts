@@ -79,11 +79,9 @@ export default function useHwProgram() {
             return ;
         }
 
-        await web3.PublicKey.createWithSeed(
-        publicKey,
-        seed,
-        programId).then( val => {
+        await web3.PublicKey.createWithSeed(publicKey,seed,programId).then( val => {
 
+            console.log("greated.pub.key", val.toBase58());
             setGreetedPubKey(val);
 
             createGreetedAccountIfNotExists();
@@ -129,7 +127,7 @@ export default function useHwProgram() {
                 GreetingSize,
             ) ;
         
-            console.log("exemption lamports:", lamports);
+           // console.log("exemption lamports:", lamports);
         
             const transaction = new web3.Transaction().add(
                 web3.SystemProgram.createAccountWithSeed({
@@ -162,6 +160,12 @@ export default function useHwProgram() {
                 return false;
             });
         }
+        /**
+        else {
+
+            console.log("greetedP:", greetedPubKey.toBase58());
+            console.log("accInfo::", greetedAccount.owner.toBase58());
+        } */
 
         return true;
     }
@@ -188,13 +192,12 @@ export default function useHwProgram() {
             return;
         }
 
-        constructGreetedPubKey().then( v => {
+        constructGreetedPubKey().then( _ => {
 
 
             if ( !greetedPubKey){
                 completionHandler(new Error("No greeted pubkey"));
                 setLoading(false);
-
                 return 
             }
 
@@ -245,8 +248,6 @@ export default function useHwProgram() {
 
             if ( !greetedPubKey){
             
-                console.log("::No greeted pubkey");
-            
                 return [-1, "No greeted ubkey"];
             }
 
@@ -257,13 +258,13 @@ export default function useHwProgram() {
 
             const accountInfo = await connection.getAccountInfo(greetedPubKey);
             if (accountInfo === null) {
-                console.log( 'Error: cannot find the greeted account' );
+                //console.log( 'Error: cannot find the greeted account' );
                 return [-1 , "Cannot find greeted account"];
             }
 
             const greeting = borsh.deserialize(GreetingSchema,GreetingAccount,accountInfo.data,);
             
-            return [greeting.counter, accountInfo.owner.toBase58()];
+            return [greeting.counter, greetedPubKey.toBase58()];
 
       }
 

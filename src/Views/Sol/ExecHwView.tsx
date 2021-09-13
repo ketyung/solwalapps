@@ -60,9 +60,15 @@ export const ExecHwView : React.FC = () => {
         <label>Going to greet </label> <span>{greetedPubKey?.toBase58()}</span>
         </div>
         <br/>
-        <div>
-        <label>Account: </label>
-        <span>{greetedAccount[1]} has been greeted {greetedAccount[0]} times</span>
+        <div>{
+            
+            greetedAccount[0] > -1 ?
+            <span>
+            <label>Account: </label>
+            <span>{greetedAccount[1]} has been greeted {greetedAccount[0]} times</span></span>
+            : <span style={{background: "#f00"}}>{greetedAccount[1]}</span>
+
+        }
         </div>
         </Card>
     </div>;
