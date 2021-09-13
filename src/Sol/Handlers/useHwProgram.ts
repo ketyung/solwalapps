@@ -73,7 +73,7 @@ export default function useHwProgram() {
     }
 
 
-    async function createGreetedAccountIfNotExists( pkey : web3.PublicKey) : Promise<boolean>{
+    async function createGreetedAccount( pkey : web3.PublicKey) : Promise<boolean>{
         
         if (!publicKey) {
 
@@ -156,7 +156,7 @@ export default function useHwProgram() {
 
                     //console.log("going to create .acc!");
     
-                    createGreetedAccountIfNotExists(val).then( ret  => {
+                    createGreetedAccount(val).then( ret  => {
     
                         if (ret) {
     

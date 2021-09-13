@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Card, Button, Input} from 'antd';
+import {Card, Button, Input, Spin} from 'antd';
 import {success, error} from '../utils/Util';
 import useHwProgram from '../../Sol/Handlers/useHwProgram';
 
@@ -67,7 +67,7 @@ export const ExecHwView : React.FC = () => {
             greetedAccount[0] > -1 ?
             <span>
             <label>Value: </label>
-            <span>{greetedAccount[1]} : {greetedAccount[0]}</span></span>
+            <span>{loading ? <Spin/> : <>{greetedAccount[1]}</>}  : {greetedAccount[0]}</span></span>
             : <div style={{background: "#f00", color: "white", padding: "10px"}}>{greetedAccount[1]}</div>
 
         }
