@@ -47,14 +47,14 @@ export default function useAirdrop() {
         
             }).catch( errx => {
 
-                completionHandler(errx as Error);
+                completionHandler(errx);
                 setLoading(false);
             });
 
         })
         .catch( errx => {
 
-            completionHandler(errx as Error);
+            completionHandler(errx);
             setLoading(false);
 
         })

@@ -43,6 +43,9 @@ export default function useSendSol() {
             [keypair],
         )*/
     
+
+        //console.log("transaction.feePayer:", transaction.feePayer);
+
         sendTransaction(transaction, connection)
         .then( value => {
     
@@ -55,23 +58,16 @@ export default function useSendSol() {
             })
             .catch ( errx => {
     
-                if (errx instanceof Error) {
-    
-                    completionHandler((errx as Error));
+                completionHandler(errx);
          
-                }
-    
             });
     
         })
         .catch(errx => {
     
-            if (errx instanceof Error) {
-    
-                completionHandler((errx as Error));
+            completionHandler(errx);
          
-            }
-    
+         
         });
     
     }
